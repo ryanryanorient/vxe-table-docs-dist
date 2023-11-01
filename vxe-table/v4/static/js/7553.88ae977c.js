@@ -1,0 +1,1 @@
+"use strict";(self["webpackChunkvxe_table_v4"]=self["webpackChunkvxe_table_v4"]||[]).push([[7553],{7553:function(e,n,r){r.r(n),r.d(n,{default:function(){return f}});var t=r(66252);function u(e,n){return(0,t.wg)(),(0,t.iD)("div")}var a=r(83744);const v={},c=(0,a.Z)(v,[["render",u]]);var f=c}}]);
