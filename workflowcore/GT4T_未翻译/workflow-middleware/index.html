@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Workflow Middleware - Workflow Core</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Workflow Middleware";
+        var mkdocs_page_input_path = "GT4T_\u672a\u7ffb\u8bd1/workflow-middleware.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Workflow Core
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../getting-started/">Getting started</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../external-events/">External events</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../activities/">Activity workers</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../error-handling/">Error handling</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../control-structures/">Control structures</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../sagas/">Saga transactions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../json-yaml/">JSON / YAML Definitions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../persistence/">Persistence</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../workflow-middleware/">Middleware</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../multi-node-clusters/">Multi-node clusters</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../using-with-aspnet-core/">ASP.NET Core</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../elastic-search/">Elasticsearch plugin</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../test-helpers/">Test helpers</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../extensions/">Extensions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../samples/">Samples</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Workflow Core</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Workflow Middleware</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="workflow-middleware">Workflow Middleware</h1>
+<p>Workflows can be extended with Middleware that run before/after workflows start/complete as well as around workflow steps to provide flexibility in implementing cross-cutting concerns such as <a href="https://www.frakkingsweet.com/net-core-log-correlation-easy-access-to-headers/">log correlation</a>, <a href="https://docs.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/implement-http-call-retries-exponential-backoff-polly">retries</a>, and other use-cases.</p>
+<p>This is done by implementing and registering <code>IWorkflowMiddleware</code> for workflows or <code>IWorkflowStepMiddleware</code> for steps.</p>
+<h2 id="step-middleware">Step Middleware</h2>
+<p>Step middleware lets you run additional code around the execution of a given step and alter its behavior. Implementing a step middleware should look familiar to anyone familiar with <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-3.1">ASP.NET Core's middleware pipeline</a> or <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-3.1#outgoing-request-middleware"><code>HttpClient</code>'s <code>DelegatingHandler</code> middleware</a>.</p>
+<h3 id="usage">Usage</h3>
+<p>First, create your own middleware class that implements <code>IWorkflowStepMiddleware</code>. Here's an example of a middleware that adds workflow ID and step ID to the log correlation context of every workflow step in your app.</p>
+<p><strong>Important:</strong> You must make sure to call <code>next()</code> as part of your middleware. If you do not do this, your step will never run.</p>
+<pre><code class="language-cs">public class LogCorrelationStepMiddleware : IWorkflowStepMiddleware
+{
+    private readonly ILogger&lt;LogCorrelationStepMiddleware&gt; _log;
+
+    public LogCorrelationStepMiddleware(
+        ILogger&lt;LogCorrelationStepMiddleware&gt; log)
+    {
+        _log = log;
+    }
+
+    public async Task&lt;ExecutionResult&gt; HandleAsync(
+        IStepExecutionContext context,
+        IStepBody body,
+        WorkflowStepDelegate next)
+    {
+        var workflowId = context.Workflow.Id;
+        var stepId = context.Step.Id;
+
+        // Uses log scope to add a few attributes to the scope
+        using (_log.BeginScope(&quot;{@WorkflowId}&quot;, workflowId))
+        using (_log.BeginScope(&quot;{@StepId}&quot;, stepId))
+        {
+            // Calling next ensures step gets executed
+            return await next();
+        }
+    }
+}
+</code></pre>
+<p>Here's another example of a middleware that uses the <a href="https://github.com/App-vNext/Polly">Polly</a> dotnet resiliency library to implement retries on workflow steps based off a custom retry policy.</p>
+<pre><code class="language-cs">public class PollyRetryStepMiddleware : IWorkflowStepMiddleware
+{
+    private const string StepContextKey = &quot;WorkflowStepContext&quot;;
+    private const int MaxRetries = 3;
+    private readonly ILogger&lt;PollyRetryStepMiddleware&gt; _log;
+
+    public PollyRetryMiddleware(ILogger&lt;PollyRetryStepMiddleware&gt; log)
+    {
+        _log = log;
+    }
+
+    // Consult Polly's docs for more information on how to build
+    // retry policies:
+    // https://github.com/App-vNext/Polly
+    public IAsyncPolicy&lt;ExecutionResult&gt; GetRetryPolicy() =&gt;
+        Policy&lt;ExecutionResult&gt;
+            .Handle&lt;TimeoutException&gt;()
+            .RetryAsync(
+                MaxRetries,
+                (result, retryCount, context) =&gt;
+                    UpdateRetryCount(
+                        result.Exception,
+                        retryCount,
+                        context[StepContextKey] as IStepExecutionContext)
+            );
+
+    public async Task&lt;ExecutionResult&gt; HandleAsync(
+        IStepExecutionContext context,
+        IStepBody body,
+        WorkflowStepDelegate next
+    )
+    {
+        return await GetRetryPolicy().ExecuteAsync(
+            ctx =&gt; next(),
+            // The step execution context gets passed down so that
+            // the step is accessible within the retry policy
+            new Dictionary&lt;string, object&gt;
+            {
+                { StepContextKey, context }
+            });
+    }
+
+    private Task UpdateRetryCount(
+        Exception exception,
+        int retryCount,
+        IStepExecutionContext stepContext)
+    {
+        var stepInstance = stepContext.ExecutionPointer;
+        stepInstance.RetryCount = retryCount;
+        return Task.CompletedTask;
+    }
+}
+</code></pre>
+<h2 id="prepost-workflow-middleware">Pre/Post Workflow Middleware</h2>
+<p>Workflow middleware run either before a workflow starts or after a workflow completes and can be used to hook into the workflow lifecycle or alter the workflow itself before it is started.</p>
+<h3 id="pre-workflow-middleware">Pre Workflow Middleware</h3>
+<p>These middleware get run before the workflow is started and can potentially alter properties on the <code>WorkflowInstance</code>.</p>
+<p>The following example illustrates setting the <code>Description</code> property on the <code>WorkflowInstance</code> using a middleware that interprets the data on the passed workflow. This is useful in cases where you want the description of the workflow to be derived from the data passed to the workflow.</p>
+<p>Note that you use <code>WorkflowMiddlewarePhase.PreWorkflow</code> to specify that it runs before the workflow starts.</p>
+<p><strong>Important:</strong> You should call <code>next</code> as part of the workflow middleware to ensure that the next workflow in the chain runs.</p>
+<pre><code class="language-cs">// AddDescriptionWorkflowMiddleware.cs
+public class AddDescriptionWorkflowMiddleware : IWorkflowMiddleware
+{
+    public WorkflowMiddlewarePhase Phase =&gt;
+        WorkflowMiddlewarePhase.PreWorkflow;
+
+    public Task HandleAsync(
+        WorkflowInstance workflow,
+        WorkflowDelegate next
+    )
+    {
+        if (workflow.Data is IDescriptiveWorkflowParams descriptiveParams)
+        {
+            workflow.Description = descriptiveParams.Description;
+        }
+
+        return next();
+    }
+}
+
+// IDescriptiveWorkflowParams.cs
+public interface IDescriptiveWorkflowParams
+{
+    string Description { get; }
+}
+
+// MyWorkflowParams.cs
+public MyWorkflowParams : IDescriptiveWorkflowParams
+{
+    public string Description =&gt; $&quot;Run task '{TaskName}'&quot;;
+
+    public string TaskName { get; set; }
+}
+</code></pre>
+<h3 id="exception-handling-in-pre-workflow-middleware">Exception Handling in Pre Workflow Middleware</h3>
+<p>Pre workflow middleware exception handling gets treated differently from post workflow middleware. Since the middleware runs before the workflow starts, any exceptions thrown within a pre workflow middleware will bubble up to the <code>StartWorkflow</code> method and it is up to the caller of <code>StartWorkflow</code> to handle the exception and act accordingly.</p>
+<pre><code class="language-cs">public async Task MyMethodThatStartsAWorkflow()
+{
+    try
+    {
+        await host.StartWorkflow(&quot;HelloWorld&quot;, 1, null);
+    }
+    catch(Exception ex)
+    {
+        // Handle the exception appropriately
+    }
+}
+</code></pre>
+<h3 id="post-workflow-middleware">Post Workflow Middleware</h3>
+<p>These middleware get run after the workflow has completed and can be used to perform additional actions for all workflows in your app.</p>
+<p>The following example illustrates how you can use a post workflow middleware to print a summary of the workflow to console.</p>
+<p>Note that you use <code>WorkflowMiddlewarePhase.PostWorkflow</code> to specify that it runs after the workflow completes.</p>
+<p><strong>Important:</strong> You should call <code>next</code> as part of the workflow middleware to ensure that the next workflow in the chain runs.</p>
+<pre><code class="language-cs">public class PrintWorkflowSummaryMiddleware : IWorkflowMiddleware
+{
+    private readonly ILogger&lt;PrintWorkflowSummaryMiddleware&gt; _log;
+
+    public PrintWorkflowSummaryMiddleware(
+        ILogger&lt;PrintWorkflowSummaryMiddleware&gt; log
+    )
+    {
+        _log = log;
+    }
+
+    public WorkflowMiddlewarePhase Phase =&gt;
+        WorkflowMiddlewarePhase.PostWorkflow;
+
+    public Task HandleAsync(
+        WorkflowInstance workflow,
+        WorkflowDelegate next
+    )
+    {
+        if (!workflow.CompleteTime.HasValue)
+        {
+            return next();
+        }
+
+        var duration = workflow.CompleteTime.Value - workflow.CreateTime;
+        _log.LogInformation($@&quot;Workflow {workflow.Description} completed in {duration:g}&quot;);
+
+        foreach (var step in workflow.ExecutionPointers)
+        {
+            var stepName = step.StepName;
+            var stepDuration = (step.EndTime - step.StartTime) ?? TimeSpan.Zero;
+            _log.LogInformation($&quot;  - Step {stepName} completed in {stepDuration:g}&quot;);
+        }
+
+        return next();
+    }
+}
+</code></pre>
+<h3 id="exception-handling-in-post-workflow-middleware">Exception Handling in Post Workflow Middleware</h3>
+<p>Post workflow middleware exception handling gets treated differently from pre workflow middleware. At the time that the workflow completes, your workflow has ran already so an uncaught exception would be difficult to act on.</p>
+<p>By default, if a workflow middleware throws an exception, it will be logged and the workflow will complete as normal. This behavior can be changed, however.</p>
+<p>To override the default post workflow error handling for all workflows in your app, just register a new <code>IWorkflowMiddlewareErrorHandler</code> in the dependency injection framework with your custom behavior as follows.</p>
+<pre><code class="language-cs">// CustomMiddlewareErrorHandler.cs
+public class CustomHandler : IWorkflowMiddlewareErrorHandler
+{
+    public Task HandleAsync(Exception ex)
+    {
+        // Handle your error asynchronously
+    }
+}
+
+// Startup.cs
+public void ConfigureServices(IServiceCollection services)
+{
+    // Other workflow configuration
+    services.AddWorkflow();
+
+    // Should go after .AddWorkflow()
+    services.AddTransient&lt;IWorkflowMiddlewareErrorHandler, CustomHandler&gt;();
+}
+</code></pre>
+<h2 id="registering-middleware">Registering Middleware</h2>
+<p>In order for middleware to take effect, they must be registered with the built-in dependency injection framework using the convenience helpers.</p>
+<p><strong>Note:</strong> Middleware will be run in the order that they are registered with middleware that are registered earlier running earlier in the chain and finishing later in the chain. For pre/post workflow middleware, all pre middleware will be run before a workflow starts and all post middleware will be run after a workflow completes.</p>
+<pre><code class="language-cs">public class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        ...
+
+        // Add workflow middleware
+        services.AddWorkflowMiddleware&lt;AddDescriptionWorkflowMiddleware&gt;();
+        services.AddWorkflowMiddleware&lt;PrintWorkflowSummaryMiddleware&gt;();
+
+        // Add step middleware
+        services.AddWorkflowStepMiddleware&lt;LogCorrelationStepMiddleware&gt;();
+        services.AddWorkflowStepMiddleware&lt;PollyRetryMiddleware&gt;();
+
+        ...
+    }
+}
+</code></pre>
+<h2 id="more-information">More Information</h2>
+<p>See the <a href="https://github.com/danielgerlag/workflow-core/tree/master/src/samples/WorkflowCore.Sample19">Workflow Middleware</a> sample for full examples of workflow middleware in action.</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

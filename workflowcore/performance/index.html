@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>性能测试 - Workflow Core</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u6027\u80fd\u6d4b\u8bd5";
+        var mkdocs_page_input_path = "performance.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Workflow Core
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../getting-started/">Getting started</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../external-events/">External events</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../activities/">Activity workers</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../error-handling/">Error handling</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../control-structures/">Control structures</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../sagas/">Saga transactions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../json-yaml/">JSON / YAML Definitions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../persistence/">Persistence</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../workflow-middleware/">Middleware</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../multi-node-clusters/">Multi-node clusters</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../using-with-aspnet-core/">ASP.NET Core</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../elastic-search/">Elasticsearch plugin</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../test-helpers/">Test helpers</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../extensions/">Extensions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../samples/">Samples</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Workflow Core</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">性能测试</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">性能测试</h1>
+<p>对 Workflow-Core 版本 3.7.0 进行了测试，以评估其性能。使用的设置是具有默认 MemoryPersistenceProvider 持久性提供程序的单节点。</p>
+<h2 id="_2">方法论</h2>
+<ul>
+<li>测试环境-在以下两个环境中依次运行测试，以了解较低与较高硬件配置下的工作流核心性能。</li>
+<li>较低的配置<ul>
+<li>核心数：8 个虚拟 CPU（<a href="https://learn.microsoft.com/azure/virtual-machines/dv3-dsv3-series">标准 _D8S_V3</a>）</li>
+<li>内存：32 GB</li>
+<li>操作系统：Linux Ubuntu 20.04</li>
+<li>网络 6</li>
+</ul>
+</li>
+<li>更高的配置<ul>
+<li>核心数：32 个虚拟 CPU（<a href="https://learn.microsoft.com/azure/virtual-machines/dav4-dasv4-series">标准 _D32AS_V4</a>）</li>
+<li>内存：128 GB</li>
+<li>操作系统：Linux Ubuntu 20.04</li>
+<li>网络 6</li>
+</ul>
+</li>
+<li>测试工作流程：工作流程由 3 个基本步骤组成。选择这 3 个简单的步骤是为了以最小但足够的复杂性测试工作流引擎的性能，并避免任何外部依赖性。</li>
+<li>步骤 1：生成<a href="https://learn.microsoft.com/dotnet/api/system.random?view=net-6.0">随机数</a>一个介于 1 到 10 之间的值，并在标准输出上打印它。</li>
+<li>第二步：<a href="https://github.com/danielgerlag/workflow-core/blob/master/docs/control-structures.md">条件步骤</a><ul>
+<li>步骤 2.1：如果步骤 1 中生成的值&gt;5，则在标准输出上打印它。</li>
+<li>步骤 2.2：如果步骤 1 中生成的值 &lt;=5，则在标准输出上打印它。</li>
+</ul>
+</li>
+<li>步骤 3：在标准输出上打印再见消息。</li>
+<li>测试工具：</li>
+<li>
+<p><a href="https://nbomber.com/docs/getting-started/overview/">NBomber</a>作为性能测试框架，以 C# 控制台应用程序为基础。</p>
+</li>
+<li>
+<p>测试场景：</p>
+</li>
+<li>每种类型的测试运行执行 20 分钟。</li>
+<li>使用了型号<a href="https://nbomber.com/docs/using-nbomber/basic-api/load-simulation#keep-constant">保持不变</a>副本的轰炸机载荷模拟。这种类型的模拟在特定时期内保持恒定数量的场景副本（实例）。</li>
+<li>测试并行副本 [1，2，3，4，5，6，7，8，10，12，14，16，32，64，128，256，512，1024]。<ul>
+<li>例如，如果我们采用并发副本 =4，持续时间 =20 分钟，这意味着 nBomber 将确保我们有 4 个测试工作流实例并行运行 20 分钟。</li>
+</ul>
+</li>
+</ul>
+<h2 id="_3">结果</h2>
+<ul>
+<li>每秒工作流数-下表显示了在并发副本数量不断增加的两个不同环境中，我们每秒能够执行的工作流数。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>并发拷贝</strong></th>
+<th style="text-align: center;"><strong>8 vCPU</strong></th>
+<th style="text-align: center;"><strong>32 vCPU</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>1</strong></td>
+<td style="text-align: center;">300.6</td>
+<td style="text-align: center;">504.7</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>2</strong></td>
+<td style="text-align: center;">310.3</td>
+<td style="text-align: center;">513.1</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>3</strong></td>
+<td style="text-align: center;">309.6</td>
+<td style="text-align: center;">519.3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>4</strong></td>
+<td style="text-align: center;">314.7</td>
+<td style="text-align: center;">521.3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>5</strong></td>
+<td style="text-align: center;">312.4</td>
+<td style="text-align: center;">519.0</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>6</strong></td>
+<td style="text-align: center;">314.7</td>
+<td style="text-align: center;">517.7</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>7</strong></td>
+<td style="text-align: center;">318.9</td>
+<td style="text-align: center;">516.7</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>8</strong></td>
+<td style="text-align: center;">318.4</td>
+<td style="text-align: center;">517.5</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>10</strong></td>
+<td style="text-align: center;">322.6</td>
+<td style="text-align: center;">517.1</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>12</strong></td>
+<td style="text-align: center;">319.7</td>
+<td style="text-align: center;">517.6</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>14</strong></td>
+<td style="text-align: center;">322.4</td>
+<td style="text-align: center;">518.1</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>16</strong></td>
+<td style="text-align: center;">327.0</td>
+<td style="text-align: center;">515.5</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>32</strong></td>
+<td style="text-align: center;">327.7</td>
+<td style="text-align: center;">515.8</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>64</strong></td>
+<td style="text-align: center;">330.7</td>
+<td style="text-align: center;">523.7</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>128</strong></td>
+<td style="text-align: center;">332.8</td>
+<td style="text-align: center;">526.9</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>256</strong></td>
+<td style="text-align: center;">332.8</td>
+<td style="text-align: center;">529.1</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>512</strong></td>
+<td style="text-align: center;">332.8</td>
+<td style="text-align: center;">529.1</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>1024</strong></td>
+<td style="text-align: center;">341.3</td>
+<td style="text-align: center;">529.1</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="每秒工作流数" src="../images/performance-test-workflows-per-second.png" /></p>
+<ul>
+<li>延迟-显示两个不同环境中的平均 P99 和 P50 延迟（以毫秒为单位），其中并发副本的数量不断增加。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>并发拷贝</strong></th>
+<th style="text-align: center;"><strong>Mean 8 vCPU</strong></th>
+<th style="text-align: center;"><strong>Mean 32 vCPU</strong></th>
+<th style="text-align: center;"><strong>P.99 8 vCPU</strong></th>
+<th style="text-align: center;"><strong>P.99 32 vCPU</strong></th>
+<th style="text-align: center;"><strong>P.50 8 vCPU</strong></th>
+<th style="text-align: center;"><strong>P.50 32 vCPU</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>1</strong></td>
+<td style="text-align: center;">3.32</td>
+<td style="text-align: center;">1.98</td>
+<td style="text-align: center;">12.67</td>
+<td style="text-align: center;">2.49</td>
+<td style="text-align: center;">3.13</td>
+<td style="text-align: center;">1.85</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>2</strong></td>
+<td style="text-align: center;">6.43</td>
+<td style="text-align: center;">3.89</td>
+<td style="text-align: center;">19.96</td>
+<td style="text-align: center;">5.67</td>
+<td style="text-align: center;">6.17</td>
+<td style="text-align: center;">3.65</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>3</strong></td>
+<td style="text-align: center;">9.67</td>
+<td style="text-align: center;">5.77</td>
+<td style="text-align: center;">24.96</td>
+<td style="text-align: center;">8.2</td>
+<td style="text-align: center;">9.14</td>
+<td style="text-align: center;">5.46</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>4</strong></td>
+<td style="text-align: center;">12.7</td>
+<td style="text-align: center;">7.76</td>
+<td style="text-align: center;">27.44</td>
+<td style="text-align: center;">13.57</td>
+<td style="text-align: center;">12.02</td>
+<td style="text-align: center;">7.22</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>5</strong></td>
+<td style="text-align: center;">15.99</td>
+<td style="text-align: center;">9.63</td>
+<td style="text-align: center;">34.59</td>
+<td style="text-align: center;">41.89</td>
+<td style="text-align: center;">15.14</td>
+<td style="text-align: center;">9.08</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>6</strong></td>
+<td style="text-align: center;">19.05</td>
+<td style="text-align: center;">11.58</td>
+<td style="text-align: center;">38.69</td>
+<td style="text-align: center;">45.92</td>
+<td style="text-align: center;">18.02</td>
+<td style="text-align: center;">10.93</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>7</strong></td>
+<td style="text-align: center;">21.94</td>
+<td style="text-align: center;">13.54</td>
+<td style="text-align: center;">42.18</td>
+<td style="text-align: center;">48.9</td>
+<td style="text-align: center;">20.72</td>
+<td style="text-align: center;">12.66</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>8</strong></td>
+<td style="text-align: center;">25.11</td>
+<td style="text-align: center;">15.45</td>
+<td style="text-align: center;">44.35</td>
+<td style="text-align: center;">51.04</td>
+<td style="text-align: center;">23.92</td>
+<td style="text-align: center;">14.54</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>10</strong></td>
+<td style="text-align: center;">30.98</td>
+<td style="text-align: center;">19.33</td>
+<td style="text-align: center;">52.29</td>
+<td style="text-align: center;">56.64</td>
+<td style="text-align: center;">29.31</td>
+<td style="text-align: center;">18.21</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>12</strong></td>
+<td style="text-align: center;">37.52</td>
+<td style="text-align: center;">23.18</td>
+<td style="text-align: center;">59.2</td>
+<td style="text-align: center;">63.33</td>
+<td style="text-align: center;">35.42</td>
+<td style="text-align: center;">21.82</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>14</strong></td>
+<td style="text-align: center;">43.44</td>
+<td style="text-align: center;">27.01</td>
+<td style="text-align: center;">67.33</td>
+<td style="text-align: center;">67.58</td>
+<td style="text-align: center;">41.28</td>
+<td style="text-align: center;">25.55</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>16</strong></td>
+<td style="text-align: center;">48.93</td>
+<td style="text-align: center;">31.03</td>
+<td style="text-align: center;">72.06</td>
+<td style="text-align: center;">72.77</td>
+<td style="text-align: center;">46.11</td>
+<td style="text-align: center;">28.93</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>32</strong></td>
+<td style="text-align: center;">97.65</td>
+<td style="text-align: center;">62.03</td>
+<td style="text-align: center;">130.05</td>
+<td style="text-align: center;">104.96</td>
+<td style="text-align: center;">94.91</td>
+<td style="text-align: center;">58.02</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>64</strong></td>
+<td style="text-align: center;">193.53</td>
+<td style="text-align: center;">122.24</td>
+<td style="text-align: center;">235.14</td>
+<td style="text-align: center;">168.45</td>
+<td style="text-align: center;">191.49</td>
+<td style="text-align: center;">115.26</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>128</strong></td>
+<td style="text-align: center;">384.63</td>
+<td style="text-align: center;">243.74</td>
+<td style="text-align: center;">449.79</td>
+<td style="text-align: center;">294.65</td>
+<td style="text-align: center;">379.65</td>
+<td style="text-align: center;">236.67</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>256</strong></td>
+<td style="text-align: center;">769.13</td>
+<td style="text-align: center;">486.82</td>
+<td style="text-align: center;">834.07</td>
+<td style="text-align: center;">561.66</td>
+<td style="text-align: center;">766.46</td>
+<td style="text-align: center;">498.22</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>512</strong></td>
+<td style="text-align: center;">1538.29</td>
+<td style="text-align: center;">968.02</td>
+<td style="text-align: center;">1725.44</td>
+<td style="text-align: center;">1052.67</td>
+<td style="text-align: center;">1542.14</td>
+<td style="text-align: center;">962.05</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>1024</strong></td>
+<td style="text-align: center;">2999.36</td>
+<td style="text-align: center;">1935.32</td>
+<td style="text-align: center;">3219.46</td>
+<td style="text-align: center;">2072.57</td>
+<td style="text-align: center;">3086.34</td>
+<td style="text-align: center;">1935.36</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Latency" src="../images/performance-test-workflows-latency.png" /></p>
+<h2 id="_4">参考文献</h2>
+<ul>
+<li><a href="https://nbomber.com/docs/getting-started/overview/">NBomber</a></li>
+</ul>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

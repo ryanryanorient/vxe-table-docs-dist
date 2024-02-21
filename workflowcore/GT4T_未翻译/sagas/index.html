@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Saga transaction with compensation - Workflow Core</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Saga transaction with compensation";
+        var mkdocs_page_input_path = "GT4T_\u672a\u7ffb\u8bd1/sagas.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Workflow Core
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../getting-started/">Getting started</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../external-events/">External events</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../activities/">Activity workers</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../error-handling/">Error handling</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../control-structures/">Control structures</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../sagas/">Saga transactions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../json-yaml/">JSON / YAML Definitions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../persistence/">Persistence</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../workflow-middleware/">Middleware</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../multi-node-clusters/">Multi-node clusters</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../using-with-aspnet-core/">ASP.NET Core</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../elastic-search/">Elasticsearch plugin</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../test-helpers/">Test helpers</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../extensions/">Extensions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../samples/">Samples</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Workflow Core</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Saga transaction with compensation</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="saga-transaction-with-compensation">Saga transaction with compensation</h1>
+<p>A Saga allows you to encapsulate a sequence of steps within a saga transaction and specify compensation steps for each.</p>
+<p>In the sample, <code>Task2</code> will throw an exception, then <code>UndoTask2</code> and <code>UndoTask1</code> will be triggered.</p>
+<pre><code class="language-c#">builder
+    .StartWith(context =&gt; Console.WriteLine(&quot;Begin&quot;))
+    .Saga(saga =&gt; saga
+        .StartWith&lt;Task1&gt;()
+            .CompensateWith&lt;UndoTask1&gt;()
+        .Then&lt;Task2&gt;()
+            .CompensateWith&lt;UndoTask2&gt;()
+        .Then&lt;Task3&gt;()
+            .CompensateWith&lt;UndoTask3&gt;()
+    )
+        .CompensateWith&lt;CleanUp&gt;()
+    .Then(context =&gt; Console.WriteLine(&quot;End&quot;));
+</code></pre>
+<h2 id="retry-policy-for-failed-saga-transaction">Retry policy for failed saga transaction</h2>
+<p>This particular example will retry the saga every 5 seconds, but you could also simply fail completely, and process a master compensation task for the whole saga.</p>
+<pre><code class="language-c#">builder
+    .StartWith(context =&gt; Console.WriteLine(&quot;Begin&quot;))
+    .Saga(saga =&gt; saga
+        .StartWith&lt;Task1&gt;()
+            .CompensateWith&lt;UndoTask1&gt;()
+        .Then&lt;Task2&gt;()
+            .CompensateWith&lt;UndoTask2&gt;()
+        .Then&lt;Task3&gt;()
+            .CompensateWith&lt;UndoTask3&gt;()
+    )
+    .OnError(Models.WorkflowErrorHandling.Retry, TimeSpan.FromSeconds(5))
+    .Then(context =&gt; Console.WriteLine(&quot;End&quot;));
+</code></pre>
+<h2 id="compensate-entire-saga-transaction">Compensate entire saga transaction</h2>
+<p>You could also only specify a master compensation step, as follows</p>
+<pre><code class="language-c#">builder
+    .StartWith(context =&gt; Console.WriteLine(&quot;Begin&quot;))
+        .Saga(saga =&gt; saga
+            .StartWith&lt;Task1&gt;()
+            .Then&lt;Task2&gt;()
+            .Then&lt;Task3&gt;()
+    )
+        .CompensateWith&lt;UndoEverything&gt;()
+    .Then(context =&gt; Console.WriteLine(&quot;End&quot;));
+</code></pre>
+<h2 id="passing-parameters-to-compensation-steps">Passing parameters to compensation steps</h2>
+<p>Parameters can be passed to a compensation step as follows</p>
+<pre><code class="language-c#">builder
+    .StartWith&lt;SayHello&gt;()
+        .CompensateWith&lt;PrintMessage&gt;(compensate =&gt; 
+        {
+            compensate.Input(step =&gt; step.Message, data =&gt; &quot;undoing...&quot;);
+        })
+</code></pre>
+<h2 id="expressing-a-saga-in-json-or-yaml">Expressing a saga in JSON or YAML</h2>
+<p>A saga transaction can be expressed in JSON or YAML, by using the <code>WorkflowCore.Primitives.Sequence</code> step and setting the <code>Saga</code> parameter to <code>true</code>.</p>
+<p>The compensation steps can be defined by specifying the <code>CompensateWith</code> parameter.</p>
+<pre><code class="language-json">{
+  &quot;Id&quot;: &quot;Saga-Sample&quot;,
+  &quot;Version&quot;: 1,
+  &quot;DataType&quot;: &quot;MyApp.MyDataClass, MyApp&quot;,
+  &quot;Steps&quot;: [
+    {
+      &quot;Id&quot;: &quot;Hello&quot;,
+      &quot;StepType&quot;: &quot;MyApp.HelloWorld, MyApp&quot;,
+      &quot;NextStepId&quot;: &quot;MySaga&quot;
+    },    
+    {
+      &quot;Id&quot;: &quot;MySaga&quot;,
+      &quot;StepType&quot;: &quot;WorkflowCore.Primitives.Sequence, WorkflowCore&quot;,
+      &quot;NextStepId&quot;: &quot;Bye&quot;,
+      &quot;Saga&quot;: true,
+      &quot;Do&quot;: [
+        [
+          {
+            &quot;Id&quot;: &quot;do1&quot;,
+            &quot;StepType&quot;: &quot;MyApp.Task1, MyApp&quot;,
+            &quot;NextStepId&quot;: &quot;do2&quot;,
+            &quot;CompensateWith&quot;: [
+              {
+                &quot;Id&quot;: &quot;undo1&quot;,
+                &quot;StepType&quot;: &quot;MyApp.UndoTask1, MyApp&quot;
+              }
+            ]
+          },
+          {
+            &quot;Id&quot;: &quot;do2&quot;,
+            &quot;StepType&quot;: &quot;MyApp.Task2, MyApp&quot;,
+            &quot;CompensateWith&quot;: [
+              {
+                &quot;Id&quot;: &quot;undo2-1&quot;,
+                &quot;NextStepId&quot;: &quot;undo2-2&quot;,
+                &quot;StepType&quot;: &quot;MyApp.UndoTask2, MyApp&quot;
+              },
+              {
+                &quot;Id&quot;: &quot;undo2-2&quot;,
+                &quot;StepType&quot;: &quot;MyApp.DoSomethingElse, MyApp&quot;
+              }
+            ]
+          }
+        ]
+      ]
+    },    
+    {
+      &quot;Id&quot;: &quot;Bye&quot;,
+      &quot;StepType&quot;: &quot;MyApp.GoodbyeWorld, MyApp&quot;
+    }
+  ]
+}
+</code></pre>
+<pre><code class="language-yaml">Id: Saga-Sample
+Version: 1
+DataType: MyApp.MyDataClass, MyApp
+Steps:
+- Id: Hello
+  StepType: MyApp.HelloWorld, MyApp
+  NextStepId: MySaga
+- Id: MySaga
+  StepType: WorkflowCore.Primitives.Sequence, WorkflowCore
+  NextStepId: Bye
+  Saga: true
+  Do:
+  - - Id: do1
+      StepType: MyApp.Task1, MyApp
+      NextStepId: do2
+      CompensateWith:
+      - Id: undo1
+        StepType: MyApp.UndoTask1, MyApp
+    - Id: do2
+      StepType: MyApp.Task2, MyApp
+      CompensateWith:
+      - Id: undo2-1
+        NextStepId: undo2-2
+        StepType: MyApp.UndoTask2, MyApp
+      - Id: undo2-2
+        StepType: MyApp.DoSomethingElse, MyApp
+- Id: Bye
+  StepType: MyApp.GoodbyeWorld, MyApp
+
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

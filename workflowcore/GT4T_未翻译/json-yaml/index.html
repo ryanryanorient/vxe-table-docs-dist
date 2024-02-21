@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Loading workflow definitions from JSON or YAML - Workflow Core</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Loading workflow definitions from JSON or YAML";
+        var mkdocs_page_input_path = "GT4T_\u672a\u7ffb\u8bd1/json-yaml.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Workflow Core
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../getting-started/">Getting started</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../external-events/">External events</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../activities/">Activity workers</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../error-handling/">Error handling</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../control-structures/">Control structures</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../sagas/">Saga transactions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../json-yaml/">JSON / YAML Definitions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../persistence/">Persistence</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../workflow-middleware/">Middleware</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../multi-node-clusters/">Multi-node clusters</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../using-with-aspnet-core/">ASP.NET Core</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../elastic-search/">Elasticsearch plugin</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../test-helpers/">Test helpers</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../extensions/">Extensions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../samples/">Samples</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Workflow Core</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Loading workflow definitions from JSON or YAML</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="loading-workflow-definitions-from-json-or-yaml">Loading workflow definitions from JSON or YAML</h1>
+<p>Install the <code>WorkflowCore.DSL</code> package from nuget and call <code>AddWorkflowDSL</code> on your service collection.
+Then grab the <code>DefinitionLoader</code> from the IoC container and call the <code>.LoadDefinition</code> method</p>
+<pre><code class="language-c#">using WorkflowCore.Interface;
+...
+var loader = serviceProvider.GetService&lt;IDefinitionLoader&gt;();
+loader.LoadDefinition(&quot;&lt;&lt;json or yaml string here&gt;&gt;&quot;, Deserializers.Json);
+</code></pre>
+<h2 id="common-dsl">Common DSL</h2>
+<p>Both the JSON and YAML formats follow a common DSL, where step types within the workflow are referenced by the fully qualified class names.
+Built-in step types typically live in the <code>WorklfowCore.Primitives</code> namespace.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Id</td>
+<td>Workflow Definition ID</td>
+</tr>
+<tr>
+<td>Version</td>
+<td>Workflow Definition Version</td>
+</tr>
+<tr>
+<td>DataType</td>
+<td>Fully qualified assembly class name of the custom data object</td>
+</tr>
+<tr>
+<td>Steps[].Id</td>
+<td>Step ID (required unique key for each step)</td>
+</tr>
+<tr>
+<td>Steps[].StepType</td>
+<td>Fully qualified assembly class name of the step</td>
+</tr>
+<tr>
+<td>Steps[].NextStepId</td>
+<td>Step ID of the next step after this one completes</td>
+</tr>
+<tr>
+<td>Steps[].Inputs</td>
+<td>Optional Key/value pair of step inputs</td>
+</tr>
+<tr>
+<td>Steps[].Outputs</td>
+<td>Optional Key/value pair of step outputs</td>
+</tr>
+<tr>
+<td>Steps[].CancelCondition</td>
+<td>Optional cancel condition</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-json">{
+  &quot;Id&quot;: &quot;HelloWorld&quot;,
+  &quot;Version&quot;: 1,
+  &quot;Steps&quot;: [
+    {
+      &quot;Id&quot;: &quot;Hello&quot;,
+      &quot;StepType&quot;: &quot;MyApp.HelloWorld, MyApp&quot;,
+      &quot;NextStepId&quot;: &quot;Bye&quot;
+    },        
+    {
+      &quot;Id&quot;: &quot;Bye&quot;,
+      &quot;StepType&quot;: &quot;MyApp.GoodbyeWorld, MyApp&quot;
+    }
+  ]
+}
+</code></pre>
+<pre><code class="language-yaml">Id: HelloWorld
+Version: 1
+Steps:
+- Id: Hello
+  StepType: MyApp.HelloWorld, MyApp
+  NextStepId: Bye
+- Id: Bye
+  StepType: MyApp.GoodbyeWorld, MyApp
+</code></pre>
+<h3 id="inputs-and-outputs">Inputs and Outputs</h3>
+<p>Inputs and outputs can be bound to a step as a key/value pair object, 
+* The <code>Inputs</code> collection, the key would match a property on the <code>Step</code> class and the value would be an expression with both the <code>data</code> and <code>context</code> parameters at your disposal.
+* The <code>Outputs</code> collection, the key would match a property on the <code>Data</code> class and the value would be an expression with both the <code>step</code> as a parameter at your disposal.</p>
+<p>Full details of the capabilities of  expression language can be found <a href="https://github.com/StefH/System.Linq.Dynamic.Core/wiki/Dynamic-Expressions#expression-language">here</a></p>
+<pre><code class="language-json">{
+  &quot;Id&quot;: &quot;AddWorkflow&quot;,
+  &quot;Version&quot;: 1,
+  &quot;DataType&quot;: &quot;MyApp.MyDataClass, MyApp&quot;,
+  &quot;Steps&quot;: [
+    {
+      &quot;Id&quot;: &quot;Hello&quot;,
+      &quot;StepType&quot;: &quot;MyApp.HelloWorld, MyApp&quot;,
+      &quot;NextStepId&quot;: &quot;Add&quot;
+    },
+    {
+      &quot;Id&quot;: &quot;Add&quot;,
+      &quot;StepType&quot;: &quot;MyApp.AddNumbers, MyApp&quot;,
+      &quot;NextStepId&quot;: &quot;Bye&quot;,
+      &quot;Inputs&quot;: { 
+          &quot;Value1&quot;: &quot;data.Value1&quot;,
+          &quot;Value2&quot;: &quot;data.Value2&quot; 
+       },
+      &quot;Outputs&quot;: { 
+          &quot;Answer&quot;: &quot;step.Result&quot; 
+      }
+    },    
+    {
+      &quot;Id&quot;: &quot;Bye&quot;,
+      &quot;StepType&quot;: &quot;MyApp.GoodbyeWorld, MyApp&quot;
+    }
+  ]
+}
+</code></pre>
+<pre><code class="language-yaml">Id: AddWorkflow
+Version: 1
+DataType: MyApp.MyDataClass, MyApp
+Steps:
+- Id: Hello
+  StepType: MyApp.HelloWorld, MyApp
+  NextStepId: Add
+- Id: Add
+  StepType: MyApp.AddNumbers, MyApp
+  NextStepId: Bye
+  Inputs:
+    Value1: data.Value1
+    Value2: data.Value2
+  Outputs:
+    Answer: step.Result
+- Id: Bye
+  StepType: MyApp.GoodbyeWorld, MyApp
+</code></pre>
+<pre><code class="language-json">{
+  &quot;Id&quot;: &quot;AddWorkflow&quot;,
+  &quot;Version&quot;: 1,
+  &quot;DataType&quot;: &quot;MyApp.MyDataClass, MyApp&quot;,
+  &quot;Steps&quot;: [
+    {
+      &quot;Id&quot;: &quot;Hello&quot;,
+      &quot;StepType&quot;: &quot;MyApp.HelloWorld, MyApp&quot;,
+      &quot;NextStepId&quot;: &quot;Print&quot;
+    },
+    {
+      &quot;Id&quot;: &quot;Print&quot;,
+      &quot;StepType&quot;: &quot;MyApp.PrintMessage, MyApp&quot;,
+      &quot;Inputs&quot;: { &quot;Message&quot;: &quot;\&quot;Hi there!\&quot;&quot; }
+    }
+  ]
+}
+</code></pre>
+<pre><code class="language-yaml">Id: AddWorkflow
+Version: 1
+DataType: MyApp.MyDataClass, MyApp
+Steps:
+- Id: Hello
+  StepType: MyApp.HelloWorld, MyApp
+  NextStepId: Print
+- Id: Print
+  StepType: MyApp.PrintMessage, MyApp
+  Inputs:
+    Message: '&quot;Hi there!&quot;'
+
+</code></pre>
+<p>You can also pass object graphs to step inputs as opposed to just scalar values</p>
+<pre><code class="language-json">&quot;inputs&quot;: 
+{    
+  &quot;Body&quot;: {
+      &quot;Value1&quot;: 1,
+      &quot;Value2&quot;: 2
+  },
+  &quot;Headers&quot;: {
+      &quot;Content-Type&quot;: &quot;application/json&quot;
+  }
+},
+</code></pre>
+<p>If you want to evaluate an expression for a given property of your object, simply prepend and <code>@</code> and pass an expression string</p>
+<pre><code class="language-json">&quot;inputs&quot;: 
+{    
+  &quot;Body&quot;: {
+      &quot;@Value1&quot;: &quot;data.MyValue * 2&quot;,
+      &quot;Value2&quot;: 5
+  },
+  &quot;Headers&quot;: {
+      &quot;Content-Type&quot;: &quot;application/json&quot;
+  }
+},
+</code></pre>
+<h4 id="enums">Enums</h4>
+<p>If your step has an enum property, you can just pass the string representation of the enum value and it will be automatically converted.</p>
+<h4 id="environment-variables-available-in-input-expressions">Environment variables available in input expressions</h4>
+<p>You can access environment variables from within input expressions.
+usage:</p>
+<pre><code>environment[&quot;VARIABLE_NAME&quot;]
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

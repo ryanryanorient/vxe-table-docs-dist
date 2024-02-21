@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Elasticsearch plugin - Workflow Core</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Elasticsearch plugin";
+        var mkdocs_page_input_path = "elastic-search.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Workflow Core
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../getting-started/">Getting started</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../external-events/">External events</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../activities/">Activity workers</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../error-handling/">Error handling</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../control-structures/">Control structures</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../sagas/">Saga transactions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../json-yaml/">JSON / YAML Definitions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../persistence/">Persistence</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../workflow-middleware/">Middleware</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../multi-node-clusters/">Multi-node clusters</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../using-with-aspnet-core/">ASP.NET Core</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Elasticsearch plugin</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_1">正在安装</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">配置</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">用法</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_4">条款</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#skiptake">Skip&amp;Take</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">过滤器</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../test-helpers/">Test helpers</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../extensions/">Extensions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../samples/">Samples</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Workflow Core</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Elasticsearch plugin</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="elasticsearch">工作流核心的 ElasticSearch 插件</h1>
+<p>由 ElasticSearch 支持的工作流核心的搜索索引插件，使你能够索引你的工作流，并根据它们的数据和状态进行搜索。</p>
+<h2 id="_1">正在安装</h2>
+<p>安装 NuGet 包“workflowcore.providers.elasticsearch ”</p>
+<p>使用 NuGet 包控制台</p>
+<pre><code>PM&gt; Install-Package WorkflowCore.Providers.Elasticsearch
+</code></pre>
+<p>使用.NET CLI</p>
+<pre><code>dotnet add package WorkflowCore.Providers.Elasticsearch
+</code></pre>
+<h2 id="_2">配置</h2>
+<p>构建服务提供程序时，请使用上 <code>IServiceCollection</code> 的 <code>.UseElasticsearch</code> 扩展方法</p>
+<pre><code>using Nest;
+...
+services.AddWorkflow(cfg =&gt;
+{
+    ...
+    cfg.UseElasticsearch(new ConnectionSettings(new Uri(&quot;http://localhost:9200&quot;)), &quot;index_name&quot;);
+});
+</code></pre>
+<h2 id="_3">用法</h2>
+<p>将 <code>ISearchIndex</code> 服务注入到代码中并使用该 <code>Search</code> 方法。</p>
+<pre><code>Search(string terms, int skip, int take, params SearchFilter[] filters)
+</code></pre>
+<h4 id="_4">条款</h4>
+<p>用空格分隔的搜索词字符串，空字符串将匹配所有内容。这将对以下默认字段执行全文搜索
+ * 参考文献
+ * 描述
+ * 地位
+ * 工作流定义</p>
+<p>此外，你还可以在自己的自定义数据对象中搜索数据（如果它实现了 <code>ISearchable</code></p>
+<p>```
+ using WorkflowCore.Interfaces;
+ ...
+ public class MyData : ISearchable
+{
+    public string StrValue1 { get; set; }
+    public string StrValue2 { get; set; }</p>
+<pre><code>public IEnumerable&lt;string&gt; GetSearchTokens()
+{
+    return new List&lt;string&gt;()
+    {
+        StrValue1,
+        StrValue2
+    };    
+}
+</code></pre>
+<p>}
+ ```</p>
+<p>##### 例子</p>
+<p>在所有字段中搜索“小狗”
+ <code>searchIndex.Search("puppies", 0, 10);</code></p>
+<h4 id="skiptake">Skip&amp;Take</h4>
+<p>使用 <code>skip</code> 和 <code>take</code> 对搜索结果进行分页。其中， <code>skip</code> 是要开始的结果编号， <code>take</code> 是页面大小。</p>
+<h4 id="_5">过滤器</h4>
+<p>你还可以提供应用于搜索的筛选器列表，这些筛选器既可以应用于标准字段，也可以应用于自定义数据对象中的任何字段。不需要在数据对象上实现 <code>ISearchable</code>，就可以对其使用筛选器。</p>
+<p>以下过滤器类型可用
+ * 标量滤波器
+ * 数据范围过滤器
+ * 数值范围过滤器
+ * 状态筛选器</p>
+<p>它们存在于 <code>WorkflowCore.Models.Search</code> 命名空间中。</p>
+<p>##### 例子</p>
+<p>按引用筛选
+ ```
+ using WorkflowCore.Models.Search;
+ ...</p>
+<p>searchIndex.Search("", 0, 10, ScalarFilter.Equals(x =&gt; x.Reference, "My Reference"));
+ ```</p>
+<p>按在某个日期之后启动的工作流进行筛选
+ <code>searchIndex.Search("", 0, 10, DateRangeFilter.After(x =&gt; x.CreateTime, startDate));</code></p>
+<p>按时间段内完成的工作流进行筛选
+ <code>searchIndex.Search("", 0, 10, DateRangeFilter.Between(x =&gt; x.CompleteTime, startDate, endDate));</code></p>
+<p>按处于某个状态的工作流进行筛选
+ <code>searchIndex.Search("", 0, 10, StatusFilter.Equals(WorkflowStatus.Complete));</code></p>
+<p>根据你自己的自定义数据类进行筛选
+ ```</p>
+<p>class MyData
+ {
+    public string Value1 { get; set; }
+    public int Value2 { get; set; }
+ }</p>
+<p>searchIndex.Search("", 0, 10, ScalarFilter.Equals<MyData>(x =&gt; x.Value1, "blue moon"));
+ searchIndex.Search("", 0, 10, NumericRangeFilter.LessThan<MyData>(x =&gt; x.Value2, 5))
+ ```</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../using-with-aspnet-core/" class="btn btn-neutral float-left" title="ASP.NET Core"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../test-helpers/" class="btn btn-neutral float-right" title="Test helpers">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../using-with-aspnet-core/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../test-helpers/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

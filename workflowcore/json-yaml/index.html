@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>JSON / YAML Definitions - Workflow Core</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "JSON / YAML Definitions";
+        var mkdocs_page_input_path = "json-yaml.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Workflow Core
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../getting-started/">Getting started</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../external-events/">External events</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../activities/">Activity workers</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../error-handling/">Error handling</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../control-structures/">Control structures</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../sagas/">Saga transactions</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">JSON / YAML Definitions</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#dsl">公共 DSL</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_1">输入和输出</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_2">枚举</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_3">输入表达式中可用的环境变量</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../persistence/">Persistence</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../workflow-middleware/">Middleware</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../multi-node-clusters/">Multi-node clusters</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../using-with-aspnet-core/">ASP.NET Core</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../elastic-search/">Elasticsearch plugin</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../test-helpers/">Test helpers</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../extensions/">Extensions</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../samples/">Samples</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Workflow Core</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">JSON / YAML Definitions</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="json-yaml">从 JSON 或 YAML 加载工作流定义</h1>
+<p>从 NuGet 安装 <code>WorkflowCore.DSL</code> 软件包并调用 <code>AddWorkflowDSL</code> 你的服务集合。然后从 IOC 容器中获取 <code>DefinitionLoader</code> 并调用该 <code>.LoadDefinition</code> 方法</p>
+<pre><code class="language-c#">using WorkflowCore.Interface;
+...
+var loader = serviceProvider.GetService&lt;IDefinitionLoader&gt;();
+loader.LoadDefinition(&quot;&lt;&lt;json or yaml string here&gt;&gt;&quot;, Deserializers.Json);
+</code></pre>
+<h2 id="dsl">公共 DSL</h2>
+<p>JSON 和 YAML 格式都遵循通用的 DSL，其中工作流中的步骤类型由完全限定的类名引用。内置步骤类型通常位于 <code>WorklfowCore.Primitives</code> 命名空间中。</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Id</td>
+<td>工作流定义 ID</td>
+</tr>
+<tr>
+<td>Version</td>
+<td>工作流定义版本</td>
+</tr>
+<tr>
+<td>DataType</td>
+<td>自定义数据对象的完全限定程序集类名</td>
+</tr>
+<tr>
+<td>Steps[].Id</td>
+<td>步骤 ID（每个步骤所需的唯一键）</td>
+</tr>
+<tr>
+<td>Steps[].StepType</td>
+<td>步骤的完全限定程序集类名称</td>
+</tr>
+<tr>
+<td>Steps[].NextStepId</td>
+<td>此步骤完成后的下一步骤的步骤 ID</td>
+</tr>
+<tr>
+<td>Steps[].Inputs</td>
+<td>步骤输入的可选键/值对</td>
+</tr>
+<tr>
+<td>Steps[].Outputs</td>
+<td>阶跃输出的可选键/值对</td>
+</tr>
+<tr>
+<td>Steps[].CancelCondition</td>
+<td>可选取消条件</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-json">{
+  &quot;Id&quot;: &quot;HelloWorld&quot;,
+  &quot;Version&quot;: 1,
+  &quot;Steps&quot;: [
+    {
+      &quot;Id&quot;: &quot;Hello&quot;,
+      &quot;StepType&quot;: &quot;MyApp.HelloWorld, MyApp&quot;,
+      &quot;NextStepId&quot;: &quot;Bye&quot;
+    },        
+    {
+      &quot;Id&quot;: &quot;Bye&quot;,
+      &quot;StepType&quot;: &quot;MyApp.GoodbyeWorld, MyApp&quot;
+    }
+  ]
+}
+</code></pre>
+<pre><code class="language-yaml">Id: HelloWorld
+Version: 1
+Steps:
+- Id: Hello
+  StepType: MyApp.HelloWorld, MyApp
+  NextStepId: Bye
+- Id: Bye
+  StepType: MyApp.GoodbyeWorld, MyApp
+</code></pre>
+<h3 id="_1">输入和输出</h3>
+<p>输入和输出可以作为键/值对对象绑定到步骤，
+* 在 <code>Inputs</code> 集合中，键将匹配类上的 <code>Step</code> 一个属性，值将是一个带有 <code>data</code> 和 <code>context</code> 参数的表达式，可供你使用。
+* 在 <code>Outputs</code> 集合中，键将与类上的 <code>Data</code> 属性匹配，而值将是一个表达式，其中两个都 <code>step</code> 作为参数供你使用。</p>
+<p>可以找到<a href="https://github.com/StefH/System.Linq.Dynamic.Core/wiki/Dynamic-Expressions#expression-language">here</a>表达式语言功能的全部细节。</p>
+<pre><code class="language-json">{
+  &quot;Id&quot;: &quot;AddWorkflow&quot;,
+  &quot;Version&quot;: 1,
+  &quot;DataType&quot;: &quot;MyApp.MyDataClass, MyApp&quot;,
+  &quot;Steps&quot;: [
+    {
+      &quot;Id&quot;: &quot;Hello&quot;,
+      &quot;StepType&quot;: &quot;MyApp.HelloWorld, MyApp&quot;,
+      &quot;NextStepId&quot;: &quot;Add&quot;
+    },
+    {
+      &quot;Id&quot;: &quot;Add&quot;,
+      &quot;StepType&quot;: &quot;MyApp.AddNumbers, MyApp&quot;,
+      &quot;NextStepId&quot;: &quot;Bye&quot;,
+      &quot;Inputs&quot;: { 
+          &quot;Value1&quot;: &quot;data.Value1&quot;,
+          &quot;Value2&quot;: &quot;data.Value2&quot; 
+       },
+      &quot;Outputs&quot;: { 
+          &quot;Answer&quot;: &quot;step.Result&quot; 
+      }
+    },    
+    {
+      &quot;Id&quot;: &quot;Bye&quot;,
+      &quot;StepType&quot;: &quot;MyApp.GoodbyeWorld, MyApp&quot;
+    }
+  ]
+}
+</code></pre>
+<pre><code class="language-yaml">Id: AddWorkflow
+Version: 1
+DataType: MyApp.MyDataClass, MyApp
+Steps:
+- Id: Hello
+  StepType: MyApp.HelloWorld, MyApp
+  NextStepId: Add
+- Id: Add
+  StepType: MyApp.AddNumbers, MyApp
+  NextStepId: Bye
+  Inputs:
+    Value1: data.Value1
+    Value2: data.Value2
+  Outputs:
+    Answer: step.Result
+- Id: Bye
+  StepType: MyApp.GoodbyeWorld, MyApp
+</code></pre>
+<pre><code class="language-json">{
+  &quot;Id&quot;: &quot;AddWorkflow&quot;,
+  &quot;Version&quot;: 1,
+  &quot;DataType&quot;: &quot;MyApp.MyDataClass, MyApp&quot;,
+  &quot;Steps&quot;: [
+    {
+      &quot;Id&quot;: &quot;Hello&quot;,
+      &quot;StepType&quot;: &quot;MyApp.HelloWorld, MyApp&quot;,
+      &quot;NextStepId&quot;: &quot;Print&quot;
+    },
+    {
+      &quot;Id&quot;: &quot;Print&quot;,
+      &quot;StepType&quot;: &quot;MyApp.PrintMessage, MyApp&quot;,
+      &quot;Inputs&quot;: { &quot;Message&quot;: &quot;\&quot;Hi there!\&quot;&quot; }
+    }
+  ]
+}
+</code></pre>
+<pre><code class="language-yaml">Id: AddWorkflow
+Version: 1
+DataType: MyApp.MyDataClass, MyApp
+Steps:
+- Id: Hello
+  StepType: MyApp.HelloWorld, MyApp
+  NextStepId: Print
+- Id: Print
+  StepType: MyApp.PrintMessage, MyApp
+  Inputs:
+    Message: '&quot;Hi there!&quot;'
+
+</code></pre>
+<p>你还可以将对象图传递给步骤输入，而不仅仅是标量值。</p>
+<pre><code class="language-json">&quot;inputs&quot;: 
+{    
+  &quot;Body&quot;: {
+      &quot;Value1&quot;: 1,
+      &quot;Value2&quot;: 2
+  },
+  &quot;Headers&quot;: {
+      &quot;Content-Type&quot;: &quot;application/json&quot;
+  }
+},
+</code></pre>
+<p>如果要计算对象的给定属性的表达式，只需在前面加上 <code>@</code> 并传递一个表达式字符串</p>
+<pre><code class="language-json">&quot;inputs&quot;: 
+{    
+  &quot;Body&quot;: {
+      &quot;@Value1&quot;: &quot;data.MyValue * 2&quot;,
+      &quot;Value2&quot;: 5
+  },
+  &quot;Headers&quot;: {
+      &quot;Content-Type&quot;: &quot;application/json&quot;
+  }
+},
+</code></pre>
+<h4 id="_2">枚举</h4>
+<p>如果你的步骤具有枚举属性，则只需传递枚举值的字符串表示形式，它就会自动转换。</p>
+<h4 id="_3">输入表达式中可用的环境变量</h4>
+<p>你可以从输入表达式中访问环境变量。使用：</p>
+<pre><code>environment[&quot;VARIABLE_NAME&quot;]
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../sagas/" class="btn btn-neutral float-left" title="Saga transactions"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../persistence/" class="btn btn-neutral float-right" title="Persistence">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../sagas/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../persistence/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
